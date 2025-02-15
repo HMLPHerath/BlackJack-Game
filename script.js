@@ -8,6 +8,8 @@ const YOU = blackjackGame['you'];
 const DEALER = blackjackGame['dealer'];
 
 const hitSound = new Audio('sounds/swish.m4a');
+const winSound = new Audio('sounds/cash.mp3');
+const lossSound = new Audio('sounds/aww.mp3');
 
 document.querySelector('#blackjact-hit-button').addEventListener('click', blackjackHit);
 
@@ -37,7 +39,8 @@ function showCards(card, activePlayer) {
 }
 
 function blackjackDeal() {
-    computeWinner();
+    showResult(computerWinner());
+    
     let yourImages = document.querySelector('#your-box').querySelectorAll('img');
 
     let dealerImages = document.querySelector('#dealer-box').querySelectorAll('img');
@@ -59,9 +62,9 @@ function blackjackDeal() {
 function updateScore(card, activePlayer) {
     if(card === 'A'){
         if(activePlayer['score'] + blackjackGame['cardsMap'][card][1]<=21){
-            activePlayer['score'] += blackjackGame['cardsMap']['card'][1];
+            activePlayer['score'] += blackjackGame['cardsMap'][card][1];
         }else{
-            activePlayer['score'] += blackjackGame['cardsMap']['card'][0];
+            activePlayer['score'] += blackjackGame['cardsMap'][card][0];
         }
     }else{
         activePlayer['score'] += blackjackGame['cardsMap'][card];
@@ -85,7 +88,7 @@ function dealerLogic() {
     showScore(DEALER);
 }
 
-function computeWinner() {
+function computerWinner() {
     let winner;
 
     if(YOU['score'] <= 21){
@@ -106,4 +109,24 @@ function computeWinner() {
     }
     console.log('Winner is', winner);
     return winner;
+}
+
+function showResult(winner) {
+    let massage, massageColor;
+
+    if(winner === YOU){
+        massage = 'You Won..!';
+        massageColor = 'green';
+        winSound.play();
+    }else if(winner === DEALER){
+        massage = 'You Lost..!';
+        massageColor = 'red';
+        lossSound.play();
+    }else{
+        massage = 'You Drew..!';
+        massageColor = 'black';
+    }
+
+    document.querySelector('#blackjack-result').textContent = massage;
+    document.querySelector('#blackjack-result').style.color = massageColor;
 }
